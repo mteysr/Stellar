@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: stellar_backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend/.env
+    environment:
+      - DJANGO_SETTINGS_MODULE=stellar_project.settings
+      - DEBUG=True
+      - ALLOWED_HOSTS=backend,localhost,127.0.0.1
+    networks:
+      - stellar_network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: stellar_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - stellar_network
+    restart: unless-stopped
+
+networks:
+  stellar_network:
+    driver: bridge

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Stellar App - Freighter Wallet</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Freighter API Library -->
+    <script src="https://unpkg.com/@stellar/freighter-api@1.7.0/dist/index.min.js"></script>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="screen">
+        <div class="container">
+            <div class="card">
+                <div class="stellar-logo">⭐</div>
+                <h1>Stellar Application</h1>
+                <p class="subtitle">Connect your Freighter wallet to continue</p>
+                
+                <div id="installNotice" class="test-box warning" style="display:none; margin: 20px 0; padding: 15px; background: #fff3e0; border-radius: 8px; border-left: 4px solid #ff9800;">
+                    <h3 style="margin-bottom: 10px;">⚠️ Freighter Extension Gerekli</h3>
+                    <p style="margin-bottom: 10px;">Freighter wallet extension'ı tarayıcınıza yüklemeniz gerekiyor.</p>
+                    <a href="https://www.freighter.app/" target="_blank" style="display: inline-block; background: #667eea; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold;">
+                        📥 Freighter'ı İndir
+                    </a>
+                    <p style="margin-top: 15px; font-size: 14px;">
+                        Extension'ı yükledikten sonra bu sayfayı <strong>Ctrl+Shift+R</strong> ile yenileyin.
+                    </p>
+                </div>
+                
+                <button id="connectBtn" class="btn-primary">
+                    Connect Freighter Wallet
+                </button>
+                
+                <div id="loadingMsg" class="loading hidden">
+                    <div class="spinner"></div>
+                    <p>Please approve the connection in your Freighter wallet...</p>
+                </div>
+                
+                <div id="errorMsg" class="error-message hidden"></div>
+                
+                <div class="info-text">
+                    <p>Don't have Freighter wallet?</p>
+                    <a href="https://www.freighter.app/" target="_blank">Install Freighter Extension</a>
+                    <br><br>
+                    <details style="font-size: 12px; color: #666; cursor: pointer;">
+                        <summary style="font-weight: bold; color: #333;">🔧 Troubleshooting</summary>
+                        <div style="margin-top: 10px; line-height: 1.6;">
+                            <p><strong>Extension yüklü ama çalışmıyor mu?</strong></p>
+                            <ol style="margin-left: 20px;">
+                                <li>chrome://extensions/ → Freighter → <strong>AÇIK</strong> olmalı</li>
+                                <li>Site access: <strong>"On all sites"</strong></li>
+                                <li>Extension'ı <strong>PIN'LEYİN</strong> (toolbar'da görünsün)</li>
+                                <li>Chrome'u <strong>tamamen kapatıp açın</strong></li>
+                                <li>Sayfayı <strong>Ctrl+Shift+R</strong> ile yenileyin</li>
+                            </ol>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Screen -->
+    <div id="dashboardScreen" class="screen hidden">
+        <div class="container">
+            <div class="card">
+                <div class="dashboard-header">
+                    <h1>🎉 Welcome to Stellar App!</h1>
+                    <button id="logoutBtn" class="btn-danger">Logout</button>
+                </div>
+
+                <div class="wallet-info">
+                    <h2>Your Wallet</h2>
+                    <div class="public-key">
+                        <strong>Public Key:</strong><br>
+                        <span id="publicKey"></span>
+                    </div>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3>Network</h3>
+                        <p>Testnet</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Status</h3>
+                        <p>✓ Connected</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Short Address</h3>
+                        <p id="shortAddress"></p>
+                    </div>
+                </div>
+
+                <div class="features">
+                    <h2>Available Features</h2>
+                    <ul>
+                        <li>Secure authentication with Freighter wallet</li>
+                        <li>Connected to Stellar testnet</li>
+                        <li>Ready for smart contract interactions</li>
+                        <li>Session management enabled</li>
+                        <li>Blockchain transaction capabilities</li>
+                    </ul>
+                </div>
+
+                <div class="next-steps">
+                    <h3>🚀 Next Steps</h3>
+                    <p>
+                        You're now connected! This is where you can add your Stellar smart contract interactions, 
+                        token operations, and other blockchain features.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

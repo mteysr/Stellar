@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Freighter Debug - Stellar App</title>
+    <style>
+        body {
+            font-family: monospace;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #252526;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        h1 { color: #4ec9b0; }
+        h2 { color: #569cd6; margin-top: 30px; }
+        .success { color: #4ec9b0; }
+        .error { color: #f48771; }
+        .info { color: #dcdcaa; }
+        button {
+            background: #0e639c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #1177bb; }
+        pre {
+            background: #1e1e1e;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        #output { margin-top: 20px; }
+        .check { margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Freighter Wallet Debug Tool</h1>
+        <p>Bu sayfa Freighter wallet extension'ının doğru yüklenip yüklenmediğini kontrol eder.</p>
+        
+        <h2>Otomatik Kontroller:</h2>
+        <div id="checks"></div>
+        
+        <h2>Manuel Test:</h2>
+        <button onclick="testFreighter()">Test Freighter Connection</button>
+        <button onclick="getPublicKey()">Get Public Key</button>
+        <button onclick="checkNetwork()">Check Network</button>
+        
+        <div id="output"></div>
+        
+        <h2>Çözümler:</h2>
+        <div style="background: #2d2d30; padding: 15px; border-radius: 4px; margin-top: 20px;">
+            <h3 style="margin-top: 0;">Eğer Freighter bulunamazsa:</h3>
+            <ol>
+                <li>Freighter extension'ının yüklü olduğundan emin olun: <a href="https://www.freighter.app/" target="_blank" style="color: #4ec9b0;">freighter.app</a></li>
+                <li>Extension'ı etkinleştirin (browser extension ayarlarından)</li>
+                <li>Sayfayı tamamen yenileyin (Ctrl+F5 veya Cmd+Shift+R)</li>
+                <li>Tarayıcıyı kapatıp yeniden açın</li>
+                <li>Eğer hala çalışmazsa, extension'ı kaldırıp yeniden yükleyin</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        const output = document.getElementById('output');
+        const checks = document.getElementById('checks');
+        
+        function log(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = type;
+            div.innerHTML = message;
+            output.appendChild(div);
+        }
+        
+        function addCheck(message, status) {
+            const div = document.createElement('div');
+            div.className = 'check';
+            div.innerHTML = `${status ? '✓' : '✗'} <span class="${status ? 'success' : 'error'}">${message}</span>`;
+            checks.appendChild(div);
+            return status;
+        }
+        
+        async function runChecks() {
+            checks.innerHTML = '';
+            
+            // Check 1: window.freighter
+            const hasFreighter = typeof window.freighter !== 'undefined';
+            addCheck('window.freighter mevcut', hasFreighter);
+            
+            // Check 2: window.stellar
+            const hasStellar = typeof window.stellar !== 'undefined';
+            addCheck('window.stellar mevcut', hasStellar);
+            
+            // Check 3: window.stellar.freighter
+            const hasStellarFreighter = window.stellar && typeof window.stellar.freighter !== 'undefined';
+            addCheck('window.stellar.freighter mevcut', hasStellarFreighter);
+            
+            // List all window properties containing 'freighter' or 'stellar'
+            const relatedProps = Object.keys(window).filter(k => 
+                k.toLowerCase().includes('freight') || 
+                k.toLowerCase().includes('stellar')
+            );
+            
+            if (relatedProps.length > 0) {
+                addCheck(`İlgili property'ler bulundu: ${relatedProps.join(', ')}`, true);
+            } else {
+                addCheck('Freighter veya Stellar ile ilgili hiçbir property bulunamadı', false);
+            }
+            
+            // Check browser
+            const browser = getBrowser();
+            addCheck(`Tarayıcı: ${browser}`, true);
+            
+            // Final verdict
+            if (hasFreighter || hasStellarFreighter) {
+                addCheck('✓ FREIGHTER HAZIR!', true);
+                return true;
+            } else {
+                addCheck('✗ FREIGHTER BULUNAMADI - Extension yüklü değil veya aktif değil', false);
+                return false;
+            }
+        }
+        
+        function getBrowser() {
+            const ua = navigator.userAgent;
+            if (ua.includes('Firefox')) return 'Firefox';
+            if (ua.includes('Chrome')) return 'Chrome';
+            if (ua.includes('Safari')) return 'Safari';
+            if (ua.includes('Edge')) return 'Edge';
+            return 'Bilinmiyor';
+        }
+        
+        async function testFreighter() {
+            output.innerHTML = '';
+            log('<h3>Freighter Bağlantı Testi</h3>');
+            
+            if (typeof window.freighter === 'undefined') {
+                log('❌ window.freighter bulunamadı!', 'error');
+                
+                if (window.stellar && window.stellar.freighter) {
+                    log('✓ Alternatif yol bulundu: window.stellar.freighter', 'success');
+                    window.freighter = window.stellar.freighter;
+                } else {
+                    log('Freighter extension yüklü değil veya aktif değil.', 'error');
+                    log('Lütfen https://www.freighter.app/ adresinden yükleyin.', 'info');
+                    return;
+                }
+            }
+            
+            try {
+                log('Freighter API bilgileri:', 'info');
+                log('<pre>' + JSON.stringify({
+                    hasIsAllowed: typeof window.freighter.isAllowed === 'function',
+                    hasGetPublicKey: typeof window.freighter.getPublicKey === 'function',
+                    hasSignMessage: typeof window.freighter.signMessage === 'function',
+                    hasGetNetwork: typeof window.freighter.getNetwork === 'function',
+                }, null, 2) + '</pre>');
+                
+                const isAllowed = await window.freighter.isAllowed();
+                log(`İzin durumu: ${isAllowed ? 'İzinli' : 'İzin gerekli'}`, isAllowed ? 'success' : 'info');
+                
+                if (!isAllowed) {
+                    log('İzin isteniyor...', 'info');
+                    await window.freighter.setAllowed();
+                    log('✓ İzin verildi!', 'success');
+                }
+                
+                log('✓ Freighter bağlantısı başarılı!', 'success');
+            } catch (error) {
+                log('❌ Hata: ' + error.message, 'error');
+                console.error(error);
+            }
+        }
+        
+        async function getPublicKey() {
+            output.innerHTML = '';
+            log('<h3>Public Key Testi</h3>');
+            
+            if (typeof window.freighter === 'undefined') {
+                log('❌ Freighter bulunamadı!', 'error');
+                return;
+            }
+            
+            try {
+                log('Public key alınıyor...', 'info');
+                const publicKey = await window.freighter.getPublicKey();
+                log('✓ Public Key: <code>' + publicKey + '</code>', 'success');
+            } catch (error) {
+                log('❌ Hata: ' + error.message, 'error');
+                if (error.message.includes('denied')) {
+                    log('Kullanıcı bağlantıyı reddetti veya henüz onaylamadı.', 'info');
+                }
+                console.error(error);
+            }
+        }
+        
+        async function checkNetwork() {
+            output.innerHTML = '';
+            log('<h3>Network Kontrolü</h3>');
+            
+            if (typeof window.freighter === 'undefined') {
+                log('❌ Freighter bulunamadı!', 'error');
+                return;
+            }
+            
+            try {
+                const network = await window.freighter.getNetwork();
+                log('✓ Aktif Network: <code>' + network + '</code>', 'success');
+                
+                if (network === 'TESTNET') {
+                    log('✓ Testnet seçili - Doğru ayar!', 'success');
+                } else {
+                    log('⚠ Mainnet seçili - Test için Testnet kullanın!', 'error');
+                }
+            } catch (error) {
+                log('❌ Hata: ' + error.message, 'error');
+                console.error(error);
+            }
+        }
+        
+        // Auto-run checks on load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                runChecks();
+            }, 1000);
+        });
+        
+        // Re-check every 2 seconds for first 10 seconds
+        let checkCount = 0;
+        const checkInterval = setInterval(() => {
+            checkCount++;
+            if (checkCount >= 5 || typeof window.freighter !== 'undefined') {
+                clearInterval(checkInterval);
+            } else {
+                runChecks();
+            }
+        }, 2000);
+    </script>
+</body>
+</html>

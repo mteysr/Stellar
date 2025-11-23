@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Freighter Manual Test</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { color: #333; margin-bottom: 20px; }
+        .test-box {
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            background: #f5f5f5;
+            border-left: 4px solid #999;
+        }
+        .test-box.success { background: #e8f5e9; border-left-color: #4caf50; }
+        .test-box.error { background: #ffebee; border-left-color: #f44336; }
+        .test-box.warning { background: #fff3e0; border-left-color: #ff9800; }
+        .code {
+            background: #2d2d2d;
+            color: #0f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            margin: 10px 0;
+            white-space: pre-wrap;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 5px 10px 0;
+            font-weight: bold;
+        }
+        button:hover { background: #5568d3; }
+        .info { font-size: 14px; color: #666; line-height: 1.8; margin: 15px 0; }
+        ul { margin-left: 30px; margin-top: 10px; }
+        li { margin: 8px 0; line-height: 1.6; }
+        .critical { background: #ff5252; color: white; padding: 20px; border-radius: 8px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔬 Freighter Manuel Diagnostic Test</h1>
+        <p class="info">Bu sayfa, Freighter extension'ının neden çalışmadığını anlamak için kapsamlı testler yapar.</p>
+
+        <div id="results"></div>
+
+        <div class="critical">
+            <h3 style="margin-bottom: 15px;">⚠️ KRİTİK BİLGİ</h3>
+            <p style="line-height: 1.8;">
+                Eğer aşağıdaki testlerin <strong>HEPSİ</strong> başarısız olursa, bu şu anlama gelir:<br>
+                <strong>Freighter extension tarayıcınıza KURULU DEĞİL veya ÇALIŞMIYOR!</strong>
+            </p>
+        </div>
+
+        <button onclick="runAllTests()">🔍 Tüm Testleri Çalıştır</button>
+        <button onclick="testChrome()">🌐 Chrome Extension API Test</button>
+        <button onclick="manualConnect()">🔌 Manuel Bağlantı Dene</button>
+        <button onclick="location.href='/'">← Ana Sayfa</button>
+    </div>
+
+    <script>
+        const results = document.getElementById('results');
+
+        function log(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `test-box ${type}`;
+            div.innerHTML = message;
+            results.appendChild(div);
+            div.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        }
+
+        function clear() {
+            results.innerHTML = '';
+        }
+
+        async function runAllTests() {
+            clear();
+            log('<h3>🔍 Diagnostic Test Başlatıldı...</h3>', 'info');
+
+            // Test 1: typeof checks
+            log(`<h3>Test 1: Typeof Kontrolü</h3>
+                 <div class="code">typeof window.freighter: ${typeof window.freighter}
+typeof window.stellar: ${typeof window.stellar}
+typeof freighterApi: ${typeof freighterApi}</div>`, 
+                 typeof window.freighter !== 'undefined' ? 'success' : 'error');
+
+            // Test 2: Window properties
+            const allKeys = Object.keys(window);
+            const related = allKeys.filter(k => {
+                const lower = k.toLowerCase();
+                return lower.includes('freight') || lower.includes('stellar') || lower.includes('wallet');
+            });
+            
+            log(`<h3>Test 2: Window Property Taraması</h3>
+                 <p>Toplam ${allKeys.length} property tarandı.</p>
+                 ${related.length > 0 ? 
+                   `<div class="code">${related.join('\\n')}</div>` : 
+                   '<p><strong>HİÇBİR İLGİLİ PROPERTY BULUNAMADI!</strong></p>'}`, 
+                 related.length > 0 ? 'warning' : 'error');
+
+            // Test 3: Chrome Extension API
+            if (typeof chrome !== 'undefined' && chrome.runtime) {
+                log(`<h3>Test 3: Chrome Extension API</h3>
+                     <p>✅ Chrome extension API mevcut</p>
+                     <div class="code">chrome.runtime.id: ${chrome.runtime.id || 'undefined'}</div>`, 'success');
+            } else {
+                log(`<h3>Test 3: Chrome Extension API</h3>
+                     <p>❌ Chrome extension API bulunamadı (Firefox olabilir)</p>`, 'warning');
+            }
+
+            // Test 4: Try to access Freighter methods
+            let foundMethods = false;
+            const apis = [window.freighter, window.stellar?.freighter, window.freighterApi];
+            
+            for (let i = 0; i < apis.length; i++) {
+                if (apis[i] && typeof apis[i] === 'object') {
+                    const methods = Object.keys(apis[i]);
+                    log(`<h3>Test 4.${i+1}: API Methods Bulundu!</h3>
+                         <div class="code">${methods.join('\\n')}</div>`, 'success');
+                    foundMethods = true;
+                }
+            }
+            
+            if (!foundMethods) {
+                log(`<h3>Test 4: API Methods</h3>
+                     <p><strong>❌ HİÇBİR FREIGHTER API BULUNAMADI!</strong></p>`, 'error');
+            }
+
+            // Test 5: Browser detection
+            const ua = navigator.userAgent;
+            let browser = 'Unknown';
+            if (ua.includes('Chrome')) browser = 'Chrome';
+            else if (ua.includes('Firefox')) browser = 'Firefox';
+            else if (ua.includes('Safari')) browser = 'Safari';
+            else if (ua.includes('Edge')) browser = 'Edge';
+
+            log(`<h3>Test 5: Tarayıcı</h3>
+                 <p>Tarayıcı: <strong>${browser}</strong></p>
+                 <p>${browser === 'Safari' ? '⚠️ Safari Freighter\'ı desteklemiyor!' : 
+                      browser !== 'Unknown' ? '✅ Bu tarayıcı Freighter\'ı destekler' : 
+                      '❌ Desteklenmeyen tarayıcı'}</p>`, 
+                 browser === 'Safari' ? 'error' : browser !== 'Unknown' ? 'success' : 'error');
+
+            // FINAL RESULT
+            if (!foundMethods && typeof window.freighter === 'undefined') {
+                log(`<h3 style="color: #f44336;">❌ SONUÇ: FREIGHTER KURULU DEĞİL!</h3>
+                     <div class="info">
+                     <p><strong>Yapılacaklar:</strong></p>
+                     <ol>
+                        <li><strong>chrome://extensions/</strong> adresine gidin</li>
+                        <li>Freighter'ı arayın - <strong>YOKSA KURULU DEĞİL!</strong></li>
+                        <li>Eğer varsa ama kapalıysa → <strong>AÇIN</strong></li>
+                        <li>Eğer yoksa → <a href="https://www.freighter.app/" target="_blank"><strong>YÜKLE</strong></a></li>
+                        <li>Yükledikten sonra <strong>TAM REFRESH</strong>: Ctrl+Shift+R</li>
+                     </ol>
+                     </div>`, 'error');
+            } else {
+                log(`<h3 style="color: #4caf50;">✅ SONUÇ: Freighter bulundu!</h3>
+                     <p>API mevcut, ana sayfada bağlantı sorunu olabilir.</p>`, 'success');
+            }
+        }
+
+        function testChrome() {
+            clear();
+            log('<h3>🌐 Chrome Extension API Testi</h3>', 'info');
+
+            if (typeof chrome === 'undefined') {
+                log('<p>❌ Chrome API bulunamadı. Firefox veya başka tarayıcı kullanıyor olabilirsiniz.</p>', 'error');
+                return;
+            }
+
+            if (!chrome.runtime) {
+                log('<p>❌ chrome.runtime bulunamadı.</p>', 'error');
+                return;
+            }
+
+            log(`<div class="code">chrome.runtime.id: ${chrome.runtime.id || 'undefined'}
+chrome.runtime.getManifest: ${typeof chrome.runtime.getManifest}
+Extensions installed: ${chrome.runtime ? 'API available' : 'No API'}</div>`, 'info');
+
+            // Try to send message to Freighter extension
+            const freighterExtensionId = 'bcacfldlkkdogcmkkibnjlakofdplcbk'; // Official Freighter ID
+            
+            log('<p>Freighter extension\'a mesaj gönderme denemesi...</p>', 'info');
+            
+            try {
+                chrome.runtime.sendMessage(freighterExtensionId, { type: 'ping' }, (response) => {
+                    if (chrome.runtime.lastError) {
+                        log(`<p>❌ Freighter extension bulunamadı veya yanıt vermiyor.</p>
+                             <div class="code">${chrome.runtime.lastError.message}</div>
+                             <p><strong>Bu, extension'ın kurulu olmadığı anlamına gelir!</strong></p>`, 'error');
+                    } else {
+                        log(`<p>✅ Freighter extension yanıt verdi!</p>
+                             <div class="code">${JSON.stringify(response, null, 2)}</div>`, 'success');
+                    }
+                });
+            } catch (e) {
+                log(`<p>❌ Hata: ${e.message}</p>`, 'error');
+            }
+        }
+
+        async function manualConnect() {
+            clear();
+            log('<h3>🔌 Manuel Bağlantı Denemesi</h3>', 'info');
+
+            // Try all possible APIs
+            let api = null;
+            
+            if (window.freighter) {
+                api = window.freighter;
+                log('<p>✅ window.freighter bulundu</p>', 'success');
+            } else if (window.stellar?.freighter) {
+                api = window.stellar.freighter;
+                log('<p>✅ window.stellar.freighter bulundu</p>', 'success');
+            } else if (typeof freighterApi !== 'undefined') {
+                api = freighterApi;
+                log('<p>✅ freighterApi (CDN) bulundu</p>', 'success');
+            } else {
+                log(`<p>❌ HİÇBİR FREIGHTER API BULUNAMADI!</p>
+                     <p><strong>Freighter extension KURULU DEĞİL!</strong></p>
+                     <p>Lütfen yükleyin: <a href="https://www.freighter.app/" target="_blank">freighter.app</a></p>`, 'error');
+                return;
+            }
+
+            // Try to connect
+            try {
+                log('<p>⏳ isAllowed() çağrılıyor...</p>', 'info');
+                const isAllowed = await api.isAllowed();
+                log(`<p>isAllowed result: ${isAllowed}</p>`, isAllowed ? 'success' : 'warning');
+
+                if (!isAllowed) {
+                    log('<p>⏳ setAllowed() çağrılıyor... Freighter popup açılacak!</p>', 'info');
+                    await api.setAllowed();
+                }
+
+                log('<p>⏳ getPublicKey() çağrılıyor...</p>', 'info');
+                const publicKey = await api.getPublicKey();
+                
+                if (publicKey) {
+                    log(`<h3>✅ BAŞARILI! PUBLIC KEY ALINDI!</h3>
+                         <div class="code">${publicKey}</div>
+                         <p><strong>Freighter çalışıyor! Ana sayfaya dönebilirsiniz.</strong></p>`, 'success');
+                } else {
+                    log('<p>❌ Public key alınamadı. Freighter\'da hesap var mı kontrol edin.</p>', 'error');
+                }
+
+            } catch (error) {
+                log(`<h3>❌ Bağlantı Hatası</h3>
+                     <div class="code">${error.message}</div>
+                     <p>Freighter popup\'ında "Connect" ve "Approve" butonlarına tıkladığınızdan emin olun.</p>`, 'error');
+            }
+        }
+
+        // Auto-run on load
+        window.addEventListener('load', () => {
+            setTimeout(runAllTests, 500);
+        });
+    </script>
+</body>
+</html>

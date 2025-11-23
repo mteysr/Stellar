@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>Stellar App - Freighter Wallet</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Freighter Extension Detection Script -->
+    <script>
+        // CRITICAL: Try to access Freighter API with multiple methods
+        console.log('🔍 Freighter detection starting...');
+        console.log('window.freighter:', typeof window.freighter);
+        console.log('window.stellar:', typeof window.stellar);
+        
+        // Check all window properties to find Freighter
+        const allKeys = Object.keys(window);
+        console.log('Total window properties:', allKeys.length);
+        
+        // List all potential Freighter-related properties
+        const freighterKeys = allKeys.filter(k => 
+            k.toLowerCase().includes('freight') || 
+            k.toLowerCase().includes('stellar') ||
+            k.toLowerCase().includes('albedo') ||
+            k.toLowerCase().includes('rabet')
+        );
+        console.log('Wallet-related properties found:', freighterKeys);
+        
+        // Poll aggressively for Freighter with detailed logging
+        let freighterCheckCount = 0;
+        const maxAttempts = 100; // 10 seconds
+        const freighterInterval = setInterval(() => {
+            freighterCheckCount++;
+            
+            // Method 1: Direct window.freighter
+            if (window.freighter && typeof window.freighter.isAllowed === 'function') {
+                console.log('✅ Freighter API FOUND via window.freighter!');
+                console.log('Freighter methods:', Object.keys(window.freighter));
+                clearInterval(freighterInterval);
+                window.dispatchEvent(new Event('FreighterLoaded'));
+                return;
+            }
+            
+            // Method 2: window.stellar.freighter
+            if (window.stellar && window.stellar.freighter && typeof window.stellar.freighter.isAllowed === 'function') {
+                console.log('✅ Freighter API FOUND via window.stellar.freighter!');
+                console.log('Freighter methods:', Object.keys(window.stellar.freighter));
+                window.freighter = window.stellar.freighter;
+                clearInterval(freighterInterval);
+                window.dispatchEvent(new Event('FreighterLoaded'));
+                return;
+            }
+            
+            // Method 3: Check for @stellar/freighter-api
+            if (window.stellarFreighterApi) {
+                console.log('✅ Freighter API FOUND via stellarFreighterApi!');
+                window.freighter = window.stellarFreighterApi;
+                clearInterval(freighterInterval);
+                window.dispatchEvent(new Event('FreighterLoaded'));
+                return;
+            }
+            
+            // Log every 10 attempts
+            if (freighterCheckCount % 10 === 0) {
+                console.log(`⏳ Attempt ${freighterCheckCount}/${maxAttempts}: Still waiting for Freighter...`);
+            }
+            
+            if (freighterCheckCount >= maxAttempts) {
+                console.error('❌ FREIGHTER NOT DETECTED AFTER 10 SECONDS!');
+                console.log('📋 Final check - All window properties with "stellar", "freight", "wallet":');
+                const finalCheck = Object.keys(window).filter(k => {
+                    const lower = k.toLowerCase();
+                    return lower.includes('stellar') || lower.includes('freight') || lower.includes('wallet');
+                });
+                console.log(finalCheck.length > 0 ? finalCheck : 'NONE FOUND');
+                console.log('');
+                console.log('🔧 TROUBLESHOOTING STEPS:');
+                console.log('1. Freighter extension kurulu mu? chrome://extensions/ kontrol edin');
+                console.log('2. Extension AÇIK mı? (toggle switch mavi olmalı)');
+                console.log('3. Site access: "On all sites" olarak ayarlı mı?');
+                console.log('4. Tarayıcıyı TAMAMEN kapatıp tekrar açtınız mı?');
+                console.log('5. Başka tarayıcıda denediniz mi? (Chrome, Firefox, Brave)');
+                clearInterval(freighterInterval);
+            }
+        }, 100);
+    </script>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="screen">
+        <div class="container">
+            <div class="card">
+                <div class="stellar-logo">⭐</div>
+                <h1>Stellar Application</h1>
+                <p class="subtitle">Connect your Freighter wallet to continue</p>
+                
+                <button id="connectBtn" class="btn-primary">
+                    Connect Freighter Wallet
+                </button>
+                
+                <div id="loadingMsg" class="loading hidden">
+                    <div class="spinner"></div>
+                    <p>Please approve the connection in your Freighter wallet...</p>
+                </div>
+                
+                                <div id="errorMsg" class="error-message hidden"></div>
+                
+                <div class="info-text">
+                    <p>Don't have Freighter wallet?</p>
+                    <a href="https://www.freighter.app/" target="_blank">Install Freighter Extension</a>
+                    <br><br>
+                    <p style="font-size: 12px; color: #999;">
+                        <strong>Extension yüklü ama algılanmıyor mu?</strong><br>
+                        1. Sayfayı tamamen yenileyin (Ctrl+F5 veya Cmd+Shift+R)<br>
+                        2. Tarayıcıyı kapatıp yeniden açın<br>
+                        3. Freighter extension'ına tıklayıp hesabınızı kontrol edin
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Screen -->
+    <div id="dashboardScreen" class="screen hidden">
+        <div class="container">
+            <div class="card">
+                <div class="dashboard-header">
+                    <h1>🎉 Welcome to Stellar App!</h1>
+                    <button id="logoutBtn" class="btn-danger">Logout</button>
+                </div>
+
+                <div class="wallet-info">
+                    <h2>Your Wallet</h2>
+                    <div class="public-key">
+                        <strong>Public Key:</strong><br>
+                        <span id="publicKey"></span>
+                    </div>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3>Network</h3>
+                        <p>Testnet</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Status</h3>
+                        <p>✓ Connected</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Short Address</h3>
+                        <p id="shortAddress"></p>
+                    </div>
+                </div>
+
+                <div class="features">
+                    <h2>Available Features</h2>
+                    <ul>
+                        <li>Secure authentication with Freighter wallet</li>
+                        <li>Connected to Stellar testnet</li>
+                        <li>Ready for smart contract interactions</li>
+                        <li>Session management enabled</li>
+                        <li>Blockchain transaction capabilities</li>
+                    </ul>
+                </div>
+
+                <div class="next-steps">
+                    <h3>🚀 Next Steps</h3>
+                    <p>
+                        You're now connected! This is where you can add your Stellar smart contract interactions, 
+                        token operations, and other blockchain features.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
