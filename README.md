@@ -1,38 +1,38 @@
 # 🌟 Stellar Blockchain Application
 
-Modern bir web uygulaması - Stellar blockchain ve Freighter wallet entegrasyonu ile güvenli kimlik doğrulama.
+A modern web application - Secure authentication with Stellar blockchain and Freighter wallet integration.
 
-## 📋 İçindekiler
-- [Özellikler](#-özellikler)
-- [Teknolojiler](#-teknolojiler)
-- [Kurulum](#-kurulum)
-- [Kullanım](#-kullanım)
+## 📋 Table of Contents
+- [Features](#-features)
+- [Technologies](#-technologies)
+- [Installation](#-installation)
+- [Usage](#-usage)
 - [API Endpoints](#-api-endpoints)
 - [Smart Contract](#-smart-contract)
-- [Katkıda Bulunma](#-katkıda-bulunma)
+- [Contributing](#-contributing)
 
-## ✨ Özellikler
+## ✨ Features
 
-### 🔐 Kimlik Doğrulama
-- ✅ **Freighter Wallet Entegrasyonu**: Güvenli wallet bağlantısı ve kimlik doğrulama
-- ✅ **Session Management**: Güvenli oturum yönetimi
-- ✅ **Signature Verification**: Blockchain tabanlı imza doğrulama
+### 🔐 Authentication
+- ✅ **Freighter Wallet Integration**: Secure wallet connection and authentication
+- ✅ **Session Management**: Secure session management
+- ✅ **Signature Verification**: Blockchain-based signature verification
 
-### 💰 Stellar Blockchain İşlemleri
-- ✅ **Bakiye Sorgulama**: XLM ve tüm asset bakiyelerini görüntüleme
-- ✅ **Ödeme Gönderme**: XLM ve custom token transferi
-- ✅ **İşlem Geçmişi**: Detaylı transaction history görüntüleme
-- ✅ **Multi-Asset Support**: Native ve custom asset desteği
-- ✅ **Memo Support**: İşlemlere memo ekleme
+### 💰 Stellar Blockchain Operations
+- ✅ **Balance Query**: View XLM and all asset balances
+- ✅ **Send Payment**: XLM and custom token transfers
+- ✅ **Transaction History**: View detailed transaction history
+- ✅ **Multi-Asset Support**: Native and custom asset support
+- ✅ **Memo Support**: Add memos to transactions
 
-### 🛠 Teknik Özellikler
-- ✅ **Stellar Network**: Testnet ve Mainnet desteği
-- ✅ **Django Backend**: RESTful API ile güçlü backend
-- ✅ **Vanilla JS Frontend**: Modern ve responsive kullanıcı arayüzü
-- ✅ **Docker Support**: Tam dockerize edilmiş uygulama
-- ✅ **Smart Contract**: Soroban örnek kontratı
+### 🛠 Technical Features
+- ✅ **Stellar Network**: Testnet and Mainnet support
+- ✅ **Django Backend**: Powerful backend with RESTful API
+- ✅ **Vanilla JS Frontend**: Modern and responsive user interface
+- ✅ **Docker Support**: Fully dockerized application
+- ✅ **Smart Contract**: Soroban example contract
 
-## 🛠 Teknolojiler
+## 🛠 Technologies
 
 ### Backend
 - Python 3.11
@@ -57,25 +57,25 @@ Modern bir web uygulaması - Stellar blockchain ve Freighter wallet entegrasyonu
 - Docker Compose
 - Nginx
 
-## 🚀 Kurulum
+## 🚀 Installation
 
-### Gereksinimler
-- Docker ve Docker Compose
+### Requirements
+- Docker and Docker Compose
 - Freighter Wallet browser extension
 
-### Adım 1: Repository'yi Klonlayın
+### Step 1: Clone the Repository
 ```bash
 cd /root/Stellar
 ```
 
-### Adım 2: Environment Variables Ayarlayın
+### Step 2: Set Up Environment Variables
 
-Backend için:
+For backend:
 ```bash
 cp backend/.env.example backend/.env
 ```
 
-`.env` dosyasını düzenleyin:
+Edit the `.env` file:
 ```env
 DEBUG=True
 DJANGO_SECRET_KEY=your-super-secret-key-here
@@ -83,63 +83,63 @@ ALLOWED_HOSTS=localhost,127.0.0.1,backend
 STELLAR_NETWORK=testnet
 ```
 
-Frontend için:
+For frontend:
 ```bash
 cp frontend/.env.example frontend/.env
 ```
 
-### Adım 3: Docker ile Başlatın
+### Step 3: Start with Docker
 ```bash
 docker-compose up --build
 ```
 
-Bu komut:
-- Backend'i build edip 8000 portunda çalıştırır
-- Frontend'i build edip 3000 portunda çalıştırır
-- Gerekli tüm bağımlılıkları yükler
+This command will:
+- Build and run backend on port 8000
+- Build and run frontend on port 3000
+- Install all required dependencies
 
-### Adım 4: Tarayıcıda Açın
+### Step 4: Open in Browser
 ```
 http://localhost:3000
 ```
 
-## 💻 Manuel Kurulum (Docker olmadan)
+## 💻 Manual Installation (Without Docker)
 
-### Backend Kurulumu
+### Backend Setup
 ```bash
 cd backend
 
-# Virtual environment oluştur
+# Create virtual environment
 python -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
 
-# Bağımlılıkları yükle
+# Install dependencies
 pip install -r requirements.txt
 
-# Environment variables ayarla
+# Set up environment variables
 cp .env.example .env
 
-# Veritabanı migration'ları çalıştır
+# Run database migrations
 python manage.py migrate
 
-# Superuser oluştur (opsiyonel)
+# Create superuser (optional)
 python manage.py createsuperuser
 
-# Development server'ı başlat
+# Start development server
 python manage.py runserver 0.0.0.0:8000
 ```
 
-### Frontend Kurulumu
+### Frontend Setup
 ```bash
 cd frontend
 
-# Bağımlılıkları yükle
+# Install dependencies
 npm install
 
-# Environment variables ayarla
+# Set up environment variables
 cp .env.example .env
 
-# Development server'ı başlat
+# Start development server
 npm start
 ```
 
@@ -147,25 +147,25 @@ Frontend: `http://localhost:3000`
 Backend: `http://localhost:8000`
 Admin Panel: `http://localhost:8000/admin`
 
-## 📖 Kullanım
+## 📖 Usage
 
-### 1. Freighter Wallet Kurulumu
-Eğer henüz yüklemediyseniz:
-- [Freighter Wallet](https://www.freighter.app/) extension'ını tarayıcınıza kurun
-- Yeni bir wallet oluşturun veya mevcut wallet'ınızı import edin
-- Testnet'e geçin (Settings > Network > Testnet)
+### 1. Freighter Wallet Setup
+If you haven't installed it yet:
+- Install [Freighter Wallet](https://www.freighter.app/) extension in your browser
+- Create a new wallet or import your existing wallet
+- Switch to Testnet (Settings > Network > Testnet)
 
-### 2. Uygulamaya Giriş
-1. Uygulamayı açın: `http://localhost:3000`
-2. "Connect Freighter Wallet" butonuna tıklayın
-3. Freighter popup'ında "Connect" onaylayın
-4. İmza istediğinde "Sign" butonuna tıklayın
-5. Dashboard'a yönlendirileceksiniz
+### 2. Login to Application
+1. Open the application: `http://localhost:3000`
+2. Click "Connect Freighter Wallet" button
+3. Confirm "Connect" in Freighter popup
+4. Click "Sign" button when signature is requested
+5. You will be redirected to the Dashboard
 
-### 3. Özellikler
-- **Wallet Bilgileri**: Public key ve hesap detaylarını görüntüleyin
-- **Session Management**: Güvenli oturum yönetimi
-- **Logout**: Güvenli çıkış yapabilirsiniz
+### 3. Features
+- **Wallet Information**: View public key and account details
+- **Session Management**: Secure session management
+- **Logout**: Securely log out
 
 ## 🔌 API Endpoints
 
@@ -319,27 +319,27 @@ Response:
 
 ## 📜 Smart Contract
 
-Proje, örnek bir Soroban smart contract içerir.
+The project includes an example Soroban smart contract.
 
-### Contract'ı Build Etme
+### Building the Contract
 ```bash
 cd contracts/hello_contract
 
-# Soroban CLI yükle (ilk kez)
+# Install Soroban CLI (first time)
 cargo install --locked soroban-cli
 
-# Contract'ı build et
+# Build the contract
 soroban contract build
 ```
 
-### Testnet'e Deploy Etme
+### Deploying to Testnet
 ```bash
-# Network ekle
+# Add network
 soroban network add testnet \
   --rpc-url https://soroban-testnet.stellar.org:443 \
   --network-passphrase "Test SDF Network ; September 2015"
 
-# Identity oluştur
+# Create identity
 soroban keys generate deployer --network testnet
 
 # Deploy
@@ -349,14 +349,14 @@ soroban contract deploy \
   --network testnet
 ```
 
-### Contract Fonksiyonları
-- `hello(to: Symbol)`: Greeting mesajı döndürür
-- `store(user: Address, value: u32)`: Bir değer saklar
-- `get(user: Address)`: Saklanan değeri getirir
+### Contract Functions
+- `hello(to: Symbol)`: Returns a greeting message
+- `store(user: Address, value: u32)`: Stores a value
+- `get(user: Address)`: Retrieves the stored value
 
-Detaylar için: [contracts/README.md](contracts/README.md)
+For details: [contracts/README.md](contracts/README.md)
 
-## 🏗 Proje Yapısı
+## 🏗 Project Structure
 
 ```
 Stellar/
@@ -395,9 +395,9 @@ Stellar/
 └── README.md              # This file
 ```
 
-## 🔧 Geliştirme
+## 🔧 Development
 
-### Backend'de Değişiklik Yapma
+### Making Changes to Backend
 ```bash
 cd backend
 source venv/bin/activate
@@ -405,26 +405,26 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
-### Frontend'de Değişiklik Yapma
+### Making Changes to Frontend
 ```bash
 cd frontend
-npm start  # Hot reload aktif
+npm start  # Hot reload active
 ```
 
-### Docker ile Development
+### Development with Docker
 ```bash
-# Container'ları yeniden build et
+# Rebuild containers
 docker-compose up --build
 
-# Sadece backend'i restart et
+# Restart only backend
 docker-compose restart backend
 
-# Log'ları izle
+# View logs
 docker-compose logs -f backend
 docker-compose logs -f frontend
 ```
 
-## 🧪 Test
+## 🧪 Testing
 
 ### Backend Tests
 ```bash
@@ -438,82 +438,82 @@ cd contracts/hello_contract
 cargo test
 ```
 
-## 🐛 Sorun Giderme
+## 🐛 Troubleshooting
 
-### Freighter bağlanamıyor
-- Freighter extension'ının güncel olduğundan emin olun
-- Testnet'te olduğunuzu kontrol edin
-- Tarayıcı console'unda hata mesajlarını inceleyin
+### Freighter cannot connect
+- Make sure Freighter extension is up to date
+- Check that you are on Testnet
+- Review error messages in browser console
 
-### Docker build hataları
+### Docker build errors
 ```bash
-# Cache'i temizle ve yeniden build et
+# Clear cache and rebuild
 docker-compose down -v
 docker-compose build --no-cache
 docker-compose up
 ```
 
-### CORS hataları
-- Backend `.env` dosyasında `CORS_ALLOWED_ORIGINS` ayarını kontrol edin
-- Frontend URL'inin listeye eklendiğinden emin olun
+### CORS errors
+- Check `CORS_ALLOWED_ORIGINS` setting in backend `.env` file
+- Make sure frontend URL is added to the list
 
-### Port zaten kullanımda
+### Port already in use
 ```bash
-# Portları değiştirin (docker-compose.yml)
+# Change ports (docker-compose.yml)
 ports:
   - "8001:8000"  # Backend
   - "3001:80"    # Frontend
 ```
 
-## 🆘 Freighter Extension Sorunları
+## 🆘 Freighter Extension Issues
 
-**SORUN:** Freighter bulunamıyor hatası alıyorsanız:
+**PROBLEM:** If you're getting "Freighter not found" error:
 
-### Hızlı Çözüm:
-1. **Extension kontrol aracını kullanın:** `http://YOUR_IP:3000/extension-check.html`
-2. **Hard refresh yapın:** `Ctrl+Shift+R` (Windows/Linux) veya `Cmd+Shift+R` (Mac)
-3. **Freighter'ı pin'leyin:** Tarayıcı toolbar'ında görünür olmalı
+### Quick Fix:
+1. **Use extension check tool:** `http://YOUR_IP:3000/extension-check.html`
+2. **Do a hard refresh:** `Ctrl+Shift+R` (Windows/Linux) or `Cmd+Shift+R` (Mac)
+3. **Pin Freighter:** Should be visible in browser toolbar
 4. **Site access:** chrome://extensions → Freighter → "On all sites"
 
-### Detaylı Rehber:
-- **URGENT_FIX.md** - Acil sorun giderme kılavuzu
-- **FREIGHTER_FIX.md** - Kapsamlı troubleshooting
+### Detailed Guide:
+- **URGENT_FIX.md** - Emergency troubleshooting guide
+- **FREIGHTER_FIX.md** - Comprehensive troubleshooting
 
-### Test Sayfaları:
-- **Ana Sayfa:** `http://YOUR_IP:3000/`
-- **Extension Kontrol:** `http://YOUR_IP:3000/extension-check.html`
-- **Debug Sayfası:** `http://YOUR_IP:3000/debug.html`
+### Test Pages:
+- **Main Page:** `http://YOUR_IP:3000/`
+- **Extension Check:** `http://YOUR_IP:3000/extension-check.html`
+- **Debug Page:** `http://YOUR_IP:3000/debug.html`
 
-## 📚 Kaynaklar
+## 📚 Resources
 
 - [Stellar Documentation](https://developers.stellar.org/)
 - [Soroban Documentation](https://soroban.stellar.org/docs)
 - [Freighter Wallet](https://www.freighter.app/)
 - [Django REST Framework](https://www.django-rest-framework.org/)
 
-## 🤝 Katkıda Bulunma
+## 🤝 Contributing
 
-1. Fork edin
-2. Feature branch oluşturun (`git checkout -b feature/amazing-feature`)
-3. Commit edin (`git commit -m 'Add amazing feature'`)
-4. Push edin (`git push origin feature/amazing-feature`)
-5. Pull Request açın
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## 📝 Lisans
+## 📝 License
 
-Bu proje MIT lisansı altındadır.
+This project is licensed under the MIT License.
 
-## 👨‍💻 Geliştirici
+## 👨‍💻 Developer
 
-Sorularınız için issue açabilirsiniz.
+Feel free to open an issue for questions.
 
 ---
 
-**Not**: Bu uygulama testnet üzerinde çalışmaktadır. Production'a geçmeden önce:
-- Secret key'leri değiştirin
-- DEBUG=False yapın
-- HTTPS kullanın
-- Security best practices uygulayın
-- Rate limiting ekleyin
+**Note**: This application runs on testnet. Before moving to production:
+- Change secret keys
+- Set DEBUG=False
+- Use HTTPS
+- Implement security best practices
+- Add rate limiting
 
-Stellar ile mutlu kodlamalar! 🚀✨
+Happy coding with Stellar! 🚀✨
